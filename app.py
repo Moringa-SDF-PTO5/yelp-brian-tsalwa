@@ -12,23 +12,21 @@ class Customer():
     @property
     def name(self):
         return self.first_name + self.last_name
-    @name.setter
-    def name(self, rating):
-        
-    
+    # @name.setter
+    # def name(self, rating):
 
-  
-# class Restaurant:
-#     all = []
-#     def __init__(self, name, ):
-#         self.name = name
-#         if not (isinstance(name, str)):
-#             raise ValueError("name must be a string")
-#         if not (1 <= len(name) <= 100 ):
-#             raise ValueError("name must not be greater than 100")
-#     @property
-#     def name(self):
-#         return self.name.append(Customer)
+
+class Restaurant:
+    all = []
+    def __init__(self, name, ):
+        self.name = name
+        if not (isinstance(name, str)):
+            raise ValueError("name must be a string")
+        if not (1 <= len(name) <= 100 ):
+            raise ValueError("name must not be greater than 100")
+    @property
+    def name(self):
+        return self.name
 
 
 
