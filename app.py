@@ -1,115 +1,105 @@
-class Customer():
-    all_customers = []
-    def __init__(self, first_name, last_name, restaurant=None):
-        if not (isinstance(first_name, str) and isinstance(last_name, str)):
-            raise ValueError("Names must be of type str")
-        if not (1 <= len(first_name) <= 25 and 1 <= len(last_name) <= 25):
-            raise ValueError("Names must be between 1 and 25 characters, inclusive")
+class Customer:
+    _customer_objects = []
+
+    def __init__(self, first_name, last_name):
+        if not isinstance(first_name, str) or (len(first_name) < 1 or len(first_name) > 25):
+            raise ValueError("First name must be a string between 1 and 25 characters.")
+        if not isinstance(last_name, str) or (len(last_name) < 1 or len(last_name) > 25):
+            raise ValueError("Last name must be a string between 1 and 25 characters.")
+
         self.first_name = first_name
         self.last_name = last_name
-        self.full_name = f"{first_name} {last_name}"
-        self.all_customers.append(self)
-        self.restaurants = []
-        if restaurant is not None:
-            self.restaurants.append(restaurant)
-            restaurant.customers.append(self)
-        self.reviews = []
+        self._customer_objects.append(self)
 
     @property
     def first_name(self):
         return self._first_name
-    
+
     @first_name.setter
     def first_name(self, value):
-        if not (isinstance(value, str)):
-            raise ValueError("first_name must be a string")
-        if not (1 <= len(value) <= 25):
-            raise ValueError("first_name must be between 1 and 25 characters, inclusive")
         self._first_name = value
 
     @property
     def last_name(self):
         return self._last_name
-    
+
     @last_name.setter
     def last_name(self, value):
-        if not (isinstance(value, str)):
-            raise ValueError("last_name must be a string")
-        if not (1 <= len(value) <= 25):
-            raise ValueError("last_name must be between 1 and 25 characters, inclusive")
         self._last_name = value
 
     @property
-    def restaurants(self):
-        return self._restaurants
-    @restaurants.setter
-    def restaurants(self, value):
-        if not (isinstance(value, list) and all(isinstance(x, Restaurant) for x in value)):
-            raise ValueError("restaurants must be a list of Restaurant objects")
-        self._restaurants = value
-
     def reviews(self):
-        return [review for review in self._reviews if review is not None]
+        reviews = [review for review in Review._review_objects if review.customer == self]
+        return reviews
 
-    def customers(self):
-        return {review.restaurant for review in self.reviews()}
+    @property
+    def restaurants(self):
+        restaurants = [review.restaurant for review in self.reviews]
+        return restaurants
 
-class Restaurant: 
-    all_restaurants = []
+    def num_negative_reviews(self):
+        return sum(1 for review in self.reviews if review.rating <= 2)
+
+    def has_reviewed_restaurant(self, restaurant):
+        return any(review.restaurant == restaurant for review in self.reviews)
+
+
+class Restaurant:
+    _restaurant_objects = []
+    _review_objects = []    
     def __init__(self, name):
-        if not (isinstance(name, str)):
-            raise ValueError("name must be a string")
-        if not (1 <= len(name) <= 100):
-            raise ValueError("name must not be greater than 100 characters")
-        
-        self._name = name
-        self.all_restaurants.append(self)
-        self.review = []
-        self.customers = []
+        if not isinstance(name, str) or len(name) < 1:
+            raise ValueError("Restaurant name must be a non-empty string.")
+
+        self.name = name
+        self._restaurant_objects.append(self)
 
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
-        self = value
+        self._name = value
 
     @property
     def reviews(self):
-        return self._reviews
+        return [review for review in Review._review_objects if review.restaurant == self]
 
-    @reviews.setter
-    def reviews(self, value):
-        if not (isinstance(value, list) and all(isinstance(x, Review) for x in value)):
-            raise ValueError("reviews must be a list of Review objects")
-        self._reviews = value
-
-    def reviews(self):
-        return [review for review in self._reviews if review is not None]
+    @property
     def customers(self):
-        return {review.restaurant for review in self.reviews()}
+        customers = [review.customer for review in self.reviews]
+        return list(set(customers))
+
+    def average_star_rating(self):
+        if not self.reviews:
+            return 0.0
+        return round(sum(review.rating for review in self.reviews) / len(self.reviews), 1)
+
+    @classmethod
+    def top_two_restaurants(cls):
+        if not any(restaurant.reviews for restaurant in cls._restaurant_objects):
+            return None
+        avg_ratings = [(restaurant.name, restaurant.average_star_rating()) for restaurant in cls._restaurant_objects]
+        avg_ratings.sort(key=lambda x: x[1], reverse=True)
+        return [Restaurant(name) for name, _ in avg_ratings[:2]]
+
 
 class Review:
+    _review_objects = []  # To store all review objects
 
-    all_reviews = []
-    def __init__(self, Customer, rating):
-        if not (isinstance(rating, int) and 1 <= rating <= 5):
-            raise ValueError("rating must be an integer between 1 and 5, inclusive")
+    def __init__(self, customer, restaurant, rating):
+        if not isinstance(customer, Customer):
+            raise ValueError("Customer must be a Customer instance.")
+        if not isinstance(restaurant, Restaurant):
+            raise ValueError("Restaurant must be a Restaurant instance.")
+        if not isinstance(rating, int) or (rating < 1 or rating > 5):
+            raise ValueError("Rating must be an integer between 1 and 5.")
+
+        self.customer = customer
+        self.restaurant = restaurant
         self.rating = rating
-        self.customer = Customer
-        self.restaurant = Customer.restaurants[0]
-        self.restaurant.reviews.append(self)
-        self.customer.reviews.append(self)
-        self.all_reviews.append(self)
-
-    @property
-    def rating(self):
-        return self._rating
-
-    @rating.setter
-    def rating(self, value):
-        self._rating = value    
+        self._review_objects.append(self)
 
     @property
     def customer(self):
@@ -117,19 +107,29 @@ class Review:
 
     @customer.setter
     def customer(self, value):
+        self._customer = value
+
     @property
     def restaurant(self):
         return self._restaurant
+
     @restaurant.setter
-    def __repr__(self):
-        return f"<Review for {self.restaurant.name} by {self.customer.name}>"
-    def top_rated(cls):
-        return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
+    def restaurant(self, value):
+        self._restaurant = value
 
     @classmethod
-    def top_reviewed(cls):
-        return sorted(cls.all(), key=lambda x: len(x.restaurant.reviews), reverse=True)[:2]
+    def top_negative_reviewer(cls):
+        if not any(review.rating < 3 for review in cls._review_objects):
+            return None
+        negative_reviews = [review for review in cls._review_objects if review.rating < 3]
+        negative_reviews.sort(key=lambda x: x.customer.name)
+        negative_reviews.sort(key=lambda x: x.rating, reverse=True)
+        return negative_reviews[0].customer
+    
+customer1 = Customer("Brian", "Tsalwa")
 
-    @classmethod
-    def most_reviews(cls):
-        return sorted(cls.all(), key=lambda x: len(x.restaurant.reviews), reverse=True)[0]
+restaurant1 = Restaurant("SushiSo")
+
+review1 = Review(customer1, restaurant1, 5)
+
+print(review1.rating)
