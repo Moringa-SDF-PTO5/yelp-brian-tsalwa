@@ -24,19 +24,32 @@ class Customer():
 
 
 class Restaurant:
-
     all = []
     def __init__(self, name):
         if not (isinstance(name, str)):
             raise ValueError("name must be a string")
         if not (1 <= len(name) <= 100):
             raise ValueError("name must not be greater than 100 characters")
-        self.name = name
+        self._name = name
         self.all.append(self)
-        
+
+
     @property
     def name(self):
-        return self.name
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if not (isinstance(value, str)):
+            raise ValueError("name must be a string")
+        if not (1 <= len(value) <= 100):
+            raise ValueError("name must not be greater than 100 characters")
+        self._name = value
+
+name = "Sushi"
+restaurant1 = Restaurant(name)
+
+print(restaurant1.name)
     
    
    
@@ -48,7 +61,7 @@ class Review:
     def __init__(self, customer, restaurant, rating):
         if not (isinstance(customer, Customer) and isinstance(restaurant, Restaurant)):
             raise ValueError("customer and restaurant must be instances of Customer and Restaurant classes")
-        if not (isinstance(rating, int) and 1 <= rating <= 5): ra
+        if not (isinstance(rating, int) and 1 <= rating <= 5):
             raise ValueError("rating must be an integer between 1 and 5, inclusive")
         self.customer = customer
         self.restaurant = restaurant
