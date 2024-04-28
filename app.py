@@ -10,6 +10,32 @@ class Customer():
         self.full_name = f"{first_name} {last_name}"
         self.all_customers.append(self)
 
+    @property
+    def first_name(self):
+        return self._first_name
+    
+    @first_name.setter
+    def first_name(self, value):
+        if not (isinstance(value, str)):
+            raise ValueError("first_name must be a string")
+        if not (1 <= len(value) <= 25):
+            raise ValueError("first_name must be between 1 and 25 characters, inclusive")
+        self._first_name = value
+
+    @property
+    def last_name(self):
+        return self._last_name
+    
+    @last_name.setter
+    def last_name(self, value):
+        if not (isinstance(value, str)):
+            raise ValueError("last_name must be a string")
+        if not (1 <= len(value) <= 25):
+            raise ValueError("last_name must be between 1 and 25 characters, inclusive")
+        self._last_name = value
+        
+
+
 
 
 # first_name = "Brian"
@@ -71,12 +97,42 @@ class Restaurant:
 
 class Review:
 
-    def __init__(self, id: int, rating: int, customer: 'Customer', restaurant: 'Restaurant'):
-
-        self.id = id
-
+    def __init__(self, rating, customer, restaurant):
         self.rating = rating
-
         self.customer = customer
-
         self.restaurant = restaurant
+        if not isinstance(customer, Customer):
+            raise ValueError("Customer must be of type Customer.")
+        if not isinstance(restaurant, Restaurant):
+            raise ValueError("Restaurant must be of type Restaurant.")
+        if not isinstance(rating, int) or rating < 1 or rating > 5:
+            raise ValueError("Rating must be an integer between 1 and 5.")
+        self.customer.reviews.append(self)
+        self.restaurant.reviews.append(self)
+
+        @property
+        def customer(self):
+            return self._customer
+        @customer.setter
+        def customer(self, value):
+            if not isinstance(value, Customer):
+                raise ValueError("Customer must be of type Customer.")
+            self._customer = value
+
+        @property
+        def restaurant(self):
+            return self._restaurant
+        @restaurant.setter
+        def restaurant(self, value):
+            if not isinstance(value, Restaurant):
+                raise ValueError("Restaurant must be of type Restaurant.")
+            self._restaurant = value
+
+        @property
+        def rating(self):
+            return self._rating
+        @rating.setter
+        def rating(self, value):
+            if not isinstance(value, int) or value < 1 or value > 5:
+                raise ValueError("Rating must be an integer between 1 and 5.")
+            self._rating = value
