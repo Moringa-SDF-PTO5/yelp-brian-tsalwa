@@ -46,10 +46,10 @@ class Restaurant:
             raise ValueError("name must not be greater than 100 characters")
         self._name = value
 
-name = "Sushi"
-restaurant1 = Restaurant(name)
+# name = "Sushi"
+# restaurant1 = Restaurant(name)
 
-print(restaurant1.name)
+# print(restaurant1.name)
     
    
    
@@ -68,10 +68,26 @@ class Review:
         self._rating = rating
 
     @property
-    def rating(self):
-        return self._rating
+    def customer(self):
+        return self._customer
 
-    # @rating.setter
-    # def rating(self, value):
-    #     raise AttributeError("rating attribute cannot be changed after the Review object is initialized")
+    @customer.setter
+    def customer(self, value):
+        if not isinstance(value, Customer):
+            raise ValueError("customer must be an instance of the Customer class")
+        self._customer = value
 
+    @property
+    def restaurant(self):
+        return self._restaurant
+
+    @restaurant.setter
+    def restaurant(self, value):
+        if not isinstance(value, Restaurant):
+            raise ValueError("restaurant must be an instance of the Restaurant class")
+        self._restaurant = value
+
+    @rating.setter
+    def rating(self, value):
+        raise AttributeError("rating attribute cannot be changed after the Review object is initialized")
+        self.rating = value
