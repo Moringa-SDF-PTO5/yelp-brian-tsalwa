@@ -117,11 +117,9 @@ class Review:
 
     @customer.setter
     def customer(self, value):
-
     @property
     def restaurant(self):
         return self._restaurant
-
     @restaurant.setter
     def __repr__(self):
         return f"<Review for {self.restaurant.name} by {self.customer.name}>"
