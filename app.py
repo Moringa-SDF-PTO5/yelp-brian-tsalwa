@@ -48,6 +48,12 @@ class Customer():
             raise ValueError("restaurants must be a list of Restaurant objects")
         self._restaurants = value
 
+    def reviews(self):
+        return [review for review in self._reviews if review is not None]
+
+    def customers(self):
+        return {review.restaurant for review in self.reviews()}
+
 class Restaurant: 
     all_restaurants = []
     def __init__(self, name):
@@ -60,4 +66,83 @@ class Restaurant:
         self.all_restaurants.append(self)
         self.review = []
         self.customers = []
-        
+
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        self = value
+
+    @property
+    def reviews(self):
+        return self._reviews
+
+    @reviews.setter
+    def reviews(self, value):
+        if not (isinstance(value, list) and all(isinstance(x, Review) for x in value)):
+            raise ValueError("reviews must be a list of Review objects")
+        self._reviews = value
+
+    def reviews(self):
+        return [review for review in self._reviews if review is not None]
+    def customers(self):
+        return {review.restaurant for review in self.reviews()}
+
+class Review:
+
+    all_reviews = []
+    def __init__(self, Customer, rating):
+        if not (isinstance(rating, int) and 1 <= rating <= 5):
+            raise ValueError("rating must be an integer between 1 and 5, inclusive")
+        self.rating = rating
+        self.customer = Customer
+        self.restaurant = Customer.restaurants[0]
+        self.restaurant.reviews.append(self)
+        self.customer.reviews.append(self)
+        self.all_reviews.append(self)
+
+    @property
+    def rating(self):
+        return self._rating
+
+    @rating.setter
+    def rating(self, value):
+        self._rating = value    
+
+    @property
+    def customer(self):
+        return self._customer
+
+    @customer.setter
+    def customer(self, value):
+
+    @property
+    def restaurant(self):
+        return self._restaurant
+
+    @restaurant.setter
+    def __repr__(self):
+        return f"<Review for {self.restaurant.name} by {self.customer.name}>"
+    # @classmethod
+    # def all(cls):
+    #     return cls.all_reviews
+    # @classmethod
+    # def top_rated(cls):
+    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
+    # @classmethod
+    # def top_reviewed(cls):
+    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[:3]
+    # @classmethod
+    # def most_reviews(cls):
+    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[0]
+    # @classmethod
+    # def top_reviewed_restaurants(cls):
+    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[:3]
+    # @classmethod
+    # def top_rated_restaurants(cls):
+    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
+    # @classmethod
+    # def top_rated_restaurants(cls):
+    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
