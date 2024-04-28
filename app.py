@@ -125,24 +125,13 @@ class Review:
     @restaurant.setter
     def __repr__(self):
         return f"<Review for {self.restaurant.name} by {self.customer.name}>"
-    # @classmethod
-    # def all(cls):
-    #     return cls.all_reviews
-    # @classmethod
-    # def top_rated(cls):
-    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
-    # @classmethod
-    # def top_reviewed(cls):
-    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[:3]
-    # @classmethod
-    # def most_reviews(cls):
-    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[0]
-    # @classmethod
-    # def top_reviewed_restaurants(cls):
-    #     return sorted(cls.all(), key=lambda x: len(x.reviews), reverse=True)[:3]
-    # @classmethod
-    # def top_rated_restaurants(cls):
-    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
-    # @classmethod
-    # def top_rated_restaurants(cls):
-    #     return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
+    def top_rated(cls):
+        return sorted(cls.all(), key=lambda x: x.rating, reverse=True)[:3]
+
+    @classmethod
+    def top_reviewed(cls):
+        return sorted(cls.all(), key=lambda x: len(x.restaurant.reviews), reverse=True)[:2]
+
+    @classmethod
+    def most_reviews(cls):
+        return sorted(cls.all(), key=lambda x: len(x.restaurant.reviews), reverse=True)[0]
