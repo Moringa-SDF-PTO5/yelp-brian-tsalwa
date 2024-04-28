@@ -1,78 +1,115 @@
 Restaurant Review System
 
-This project contains classes to model a simple restaurant review system using Object-Oriented Programming in Python. The classes included are:
-
-    Customer
-    Restaurant
-    Review
-
-Each class has specific properties and methods to manage relationships and aggregate/association methods.
+This repository contains a simple implementation of a restaurant review system using Python classes. The system includes three main classes: Customer, Restaurant, and Review.
 Classes
 Customer
 
-A Customer object is initialized with a first name and a last name. It has methods to manage reviews and relationships with restaurants.
-Properties
+The Customer class represents a customer who can write reviews for restaurants. It has the following properties:
 
-    first_name
-    last_name
+    first_name: A string representing the customer's first name.
+    last_name: A string representing the customer's last name.
 
-Methods
+The Customer class has the following methods:
 
-    reviews()
-    customers()
-    num_negative_reviews()
-    has_reviewed_restaurant(restaurant)
+    reviews(): Returns a list of all reviews written by the customer.
+    restaurants(): Returns a list of all restaurants reviewed by the customer.
+    num_negative_reviews(): Returns the total number of negative reviews (with a rating of 1 or 2) written by the customer.
+    has_reviewed_restaurant(restaurant): Returns a boolean indicating whether the customer has written a review for the given restaurant.
 
 Restaurant
 
-A Restaurant object is initialized with a name. It has methods to manage reviews and relationships with customers.
-Properties
+The Restaurant class represents a restaurant that can be reviewed by customers. It has the following properties:
 
-    name
+    name: A string representing the name of the restaurant.
 
-Methods
+The Restaurant class has the following methods:
 
-    reviews()
-    customers()
-    average_star_rating()
-    top_two_restaurants() (class method)
+    reviews(): Returns a list of all reviews for the restaurant.
+    customers(): Returns a list of all customers who have reviewed the restaurant.
+    average_star_rating(): Returns the average star rating for the restaurant based on its reviews.
+    top_two_restaurants(): Returns a list of the top two restaurants with the highest average star ratings.
 
 Review
 
-A Review object is initialized with a Customer, a Restaurant, and a rating. It manages relationships between customers and restaurants.
-Properties
+The Review class represents a review written by a customer for a restaurant. It has the following properties:
 
-    customer
-    restaurant
-    rating
+    customer: A Customer instance representing the customer who wrote the review.
+    restaurant: A Restaurant instance representing the restaurant reviewed.
+    rating: An integer representing the rating of the review (1-5).
 
 Usage
 
-Create instances of the classes and use their methods to manage relationships and aggregate/association data.
+To use the restaurant review system, simply create instances of the Customer, Restaurant, and Review classes and call their methods as needed.
 
-Example:
-
-python
-
-customer1 = Customer('John', 'Doe')
-
-customer2 = Customer('Jane', 'Doe')
-
-
-restaurant1 = Restaurant('Restaurant A')
-
-restaurant2 = Restaurant('Restaurant B')
-
-
-review1 = Review(customer1, restaurant1, 3)
-
-review2 = Review(customer2, restaurant1, 1)
-
-review3 = Review(customer1, restaurant2, 5)
-
-Now you can use the methods to manage relationships and aggregate/association data.
+Here's an example:
 
 python
 
-print(customer1.num_negative_reviews())  # Output: 1
+# Create a new customer
 
+customer1 = Customer("John", "Doe")
+
+
+# Create a new restaurant
+
+restaurant1 = Restaurant("Best Restaurant")
+
+
+# Create a new review
+
+review1 = Review(customer1, restaurant1, 5)
+
+
+# Access the customer property of a Review object
+
+print(review1.customer)  # Output: <__main__.Customer object at 0x...>
+
+
+# Access the restaurant property of a Review object
+
+print(review1.restaurant)  # Output: <__main__.Restaurant object at 0x...>
+
+
+# Access the reviews method of a Restaurant object
+
+print(restaurant1.reviews())  # Output: [<__main__.Review object at 0x...>]
+
+
+# Access the customers method of a Restaurant object
+
+print(restaurant1.customers())  # Output: [<__main__.Customer object at 0x...>]
+
+
+# Access the average_star_rating method of a Restaurant object
+
+print(restaurant1.average_star_rating())  # Output: 0.0
+
+
+# Access the top_two_restaurants class method
+
+print(Restaurant.top_two_restaurants())  # Output: None
+
+
+# Access the num_negative_reviews method
+
+print(customer1.num_negative_reviews())  # Output: 0
+
+
+# Access the has_reviewed_restaurant method
+
+print(customer1.has_reviewed_restaurant(restaurant1))  # Output: True
+
+Testing
+
+To test the restaurant review system, simply run the provided test.py file. It contains unit tests for all methods in the Customer, Restaurant, and Review classes.
+
+bash
+
+python test.py
+
+Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
